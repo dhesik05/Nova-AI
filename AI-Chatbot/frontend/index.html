@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="D-AI — Your Intelligent AI Assistant powered by Groq. Chat, upload PDFs, and get intelligent answers instantly." />
+  <meta name="theme-color" content="#DC2626" />
+  <title>D-AI — Conversational Intelligence</title>
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Highlight.js theme (Catppuccin Mocha - dark) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+
+  <!-- D-AI CSS -->
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/style.css?v=2" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- External libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <style>
+    /* Ensure chatInner is a column flex container */
+    #chatInner { display: flex; flex-direction: column; gap: 24px; }
+    .skeleton-line.w-3q  { width: 75%; }
+    .skeleton-line.w-1h  { width: 50%; }
+    .skeleton-line.w-2t  { width: 66%; }
+  </style>
+
+</head>
+
+<body>
+<!-- ============================================================
+     TOAST CONTAINER
+     ============================================================ -->
+<div id="toastContainer" role="region" aria-live="polite" aria-label="Notifications"></div>
+
+<!-- ============================================================
+     LOGIN OVERLAY
+     ============================================================ -->
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-box">
+    <div class="login-logo" aria-hidden="true">D</div>
+    <h2 class="login-title">Welcome to D-AI</h2>
+    <p class="login-subtitle">Sign in to start your intelligent conversation.</p>
+    <div class="login-btn-wrap" style="display: flex; flex-direction: column; align-items: center; gap: 16px;">
+      <div id="googleSignInBtn"></div>
+      <button id="devLoginBtn" style="padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-medium); background: transparent; color: var(--text-secondary); cursor: pointer; font-family: inherit; font-size: 14px; transition: all 0.2s;">Continue as Guest</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SIDEBAR OVERLAY (mobile)
+     ============================================================ -->
+<div id="sidebarOverlay" aria-hidden="true"></div>
+
+<!-- ============================================================
+     APP ROOT
+     ============================================================ -->
+<div id="app">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────── -->
+  <aside id="sidebar" role="navigation" aria-label="Conversations">
+
+    <!-- Header -->
+    <div class="sidebar-header">
+      <a href="/" class="brand" aria-label="D-AI home">
+        <div class="brand-logo" aria-hidden="true">D</div>
+        <div class="brand-text">
+          <div class="brand-name">D-AI</div>
+          <div class="brand-tagline">Your Intelligent AI Assistant</div>
+        </div>
+      </a>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" title="Collapse sidebar" aria-label="Collapse sidebar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="sidebar-search">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="search"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search conversations…"
+          aria-label="Search conversations"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+
+    <!-- New chat -->
+    <button class="new-chat-btn" id="newChatBtn" aria-label="Start a new chat">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New Chat
+    </button>
+
+    <!-- Conversations -->
+    <div class="sidebar-section" role="list" aria-label="Conversation history">
+      <div id="conversationList"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="sidebar-footer" id="sidebarFooter">
+      <div class="sidebar-footer-info">
+        <img id="userAvatar" class="footer-avatar-img" src="" alt="Avatar" style="display: none;" />
+        <div id="defaultAvatar" class="footer-avatar" aria-hidden="true">U</div>
+        <div class="footer-text">
+          <div id="userName" class="footer-name">Loading...</div>
+          <div id="userEmail" class="footer-plan"></div>
+        </div>
+      </div>
+      <button class="icon-btn" id="logoutBtn" title="Logout" aria-label="Logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ── MAIN ────────────────────────────────────────────── -->
+  <main id="main">
+
+    <!-- ── TOP BAR ──────────────────────────────────────── -->
+    <header id="topbar" role="banner">
+      <div class="topbar-left">
+        <!-- Sidebar toggle -->
+        <button class="icon-btn" id="sidebarToggle" title="Toggle sidebar" aria-label="Toggle sidebar" aria-controls="sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+
+        <!-- Current chat title -->
+        <h1 id="topbar-title">D-AI</h1>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Model selector -->
+        <div class="model-selector-wrap">
+          <label for="modelSelect" class="sr-only">Select AI model</label>
+          <select id="modelSelect" title="Select model" aria-label="Select AI model">
+            <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+          </select>
+        </div>
+
+        <!-- Divider (hidden when no chat) -->
+        <div class="topbar-divider hidden" id="topbarDivider" aria-hidden="true"></div>
+
+        <!-- Chat action buttons (hidden when no active chat) -->
+        <button class="icon-btn hidden" id="shareBtn" title="Share conversation" aria-label="Share conversation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </button>
+
+        <button class="icon-btn hidden" id="exportPdfBtn" title="Export as PDF" aria-label="Export as PDF">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </button>
+
+        <button class="icon-btn hidden" id="exportTxtBtn" title="Export as text" aria-label="Export as text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </button>
+
+        <button class="icon-btn danger hidden" id="deleteChatBtn" title="Delete conversation" aria-label="Delete conversation">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+            <path d="M10 11v6"/><path d="M14 11v6"/>
+            <path d="M9 6V4h6v2"/>
+          </svg>
+        </button>
+
+        <!-- Theme toggle -->
+        <button class="icon-btn" id="themeBtn" title="Toggle dark/light mode" aria-label="Toggle theme">
+          <!-- Icon injected by settings.js -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── CHAT AREA ─────────────────────────────────────── -->
+    <section id="chat" role="main" aria-label="Chat messages" aria-live="polite">
+
+      <!-- Welcome screen -->
+      <div id="welcomeScreen">
+        <div class="welcome-logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <h2 class="welcome-title">How can I help you?</h2>
+        <p class="welcome-subtitle">Ask me anything — I can chat, write, code, analyse PDFs, and much more.</p>
+
+        <div class="welcome-suggestions" role="list">
+          <button class="suggestion-card" role="listitem"
+            data-prompt="Explain quantum computing in simple terms"
+            aria-label="Suggestion: Explain quantum computing in simple terms">
+            <div class="suggestion-icon" aria-hidden="true">⚛️</div>
+            <div class="suggestion-title">Explain quantum computing</div>
+            <div class="suggestion-desc">Get a clear, jargon-free explanation</div>
+          </button>
+
+          <button class="suggestion-card" role="listitem"
+            data-prompt="Write a Python script that reads a CSV file and computes statistics"
+            aria-label="Suggestion: Write a Python script for CSV statistics">
+            <div class="suggestion-icon" aria-hidden="true">🐍</div>
+            <div class="suggestion-title">Write a Python script</div>
+            <div class="suggestion-desc">Generate production-ready code</div>
+          </button>
+
+          <button class="suggestion-card" role="listitem"
+            data-prompt="What are the best practices for writing clean and maintainable code?"
+            aria-label="Suggestion: Best practices for clean code">
+            <div class="suggestion-icon" aria-hidden="true">✨</div>
+            <div class="suggestion-title">Clean code best practices</div>
+            <div class="suggestion-desc">Tips for maintainable software</div>
+          </button>
+
+          <button class="suggestion-card" role="listitem"
+            data-prompt="Summarise the key differences between REST and GraphQL APIs"
+            aria-label="Suggestion: REST vs GraphQL">
+            <div class="suggestion-icon" aria-hidden="true">🔌</div>
+            <div class="suggestion-title">REST vs GraphQL</div>
+            <div class="suggestion-desc">Compare API design approaches</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Message feed -->
+      <div class="chat-inner hidden" id="chatInner" role="feed" aria-label="Messages">
+
+        <!-- Skeleton loader -->
+        <div class="skeleton-wrap" id="skeletonWrap" aria-hidden="true">
+          <div class="msg-avatar ai-avatar" aria-hidden="true">✦</div>
+          <div class="skeleton-content">
+            <div class="skeleton-line w-full"></div>
+            <div class="skeleton-line w-3q"></div>
+            <div class="skeleton-line w-1h"></div>
+          </div>
+        </div>
+
+        <!-- Typing indicator -->
+        <div class="message-row ai" id="typingIndicator" aria-label="D-AI is typing" role="status">
+          <div class="msg-avatar ai-avatar" aria-hidden="true">✦</div>
+          <div class="typing-dots" aria-hidden="true">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ── COMPOSER ──────────────────────────────────────── -->
+    <footer id="composer">
+      <div class="composer-inner">
+
+        <!-- Action bar: stop / regenerate -->
+        <div class="composer-actions-bar">
+
+          <button class="composer-action-btn" id="stopBtn" disabled aria-label="Stop generation" title="Stop generation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+            </svg>
+            Stop
+          </button>
+
+          <button class="composer-action-btn" id="regenerateBtn" disabled aria-label="Regenerate response" title="Regenerate last response">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            Regenerate
+          </button>
+        </div>
+
+        <!-- Input box -->
+        <div class="composer-box" role="group" aria-label="Message input area">
+
+          <!-- Left: attach & mic -->
+          <div class="composer-left-btns">
+            <button class="composer-icon-btn" id="attachBtn" title="Upload PDF for Q&A" aria-label="Upload PDF">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+              </svg>
+            </button>
+            <input type="file" id="pdfInput" accept=".pdf" aria-label="PDF file input" style="display:none;" />
+
+            <button class="composer-icon-btn" id="imageBtn" title="Upload Image" aria-label="Upload Image">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </button>
+            <input type="file" id="imageInput" accept="image/png, image/jpeg, image/jpg, image/webp" aria-label="Image file input" style="display:none;" />
+
+            <button class="composer-icon-btn" id="micBtn" title="Voice input (click to record)" aria-label="Start voice recording">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Centre: text input -->
+          <textarea
+            id="messageInput"
+            placeholder="Ask D-AI anything…"
+            rows="1"
+            aria-label="Type your message"
+            aria-multiline="true"
+            autocomplete="off"
+            spellcheck="true"
+          ></textarea>
+
+          <!-- Right: send -->
+          <div class="composer-right-btns">
+            <button id="sendBtn" title="Send message (Enter)" aria-label="Send message">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Hint -->
+        <p class="composer-hint">
+          Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for a new line
+        </p>
+
+      </div>
+    </footer>
+
+  </main>
+</div>
+
+<!-- ============================================================
+     SCRIPTS (ES modules)
+     ============================================================ -->
+<script src="js/auth.js?v=4"></script>
+<script src="js/app.js?v=4"></script>
+
+</body>
+</html>

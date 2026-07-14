@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Shared conversation — D-AI" />
+  <title>Shared Conversation — D-AI</title>
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Highlight.js dark theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+
+  <!-- D-AI design tokens -->
+  <link rel="stylesheet" href="/css/variables.css" />
+
+  <!-- External libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+  <style>
+    /* ── Base reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans, 'Inter', system-ui, sans-serif);
+      background: var(--bg-page, #F8FAFC);
+      color: var(--text-primary, #111827);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Page chrome ── */
+    .share-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg-card, #fff);
+      border-bottom: 1px solid var(--border-light, #E5E7EB);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .share-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .share-brand-logo {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #DC2626, #EF4444, #F97316);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      box-shadow: 0 4px 20px rgba(220,38,38,0.25);
+      flex-shrink: 0;
+    }
+
+    .share-brand-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .share-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .share-badge {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted, #9CA3AF);
+      background: var(--bg-hover, #F1F5F9);
+      border: 1px solid var(--border-light, #E5E7EB);
+      border-radius: 9999px;
+      padding: 4px 12px;
+    }
+
+    .theme-toggle-btn {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: var(--bg-hover, #F1F5F9);
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary, #6B7280);
+      transition: all 0.15s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--bg-active, #FFF1F1);
+      color: #DC2626;
+    }
+
+    /* ── Content container ── */
+    .share-container {
+      max-width: 840px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* ── Conversation header ── */
+    .conv-header {
+      margin-bottom: 36px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-light, #E5E7EB);
+      animation: fadeInUp 0.4s ease;
+    }
+
+    .conv-header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #DC2626;
+      background: rgba(220,38,38,0.1);
+      border: 1px solid rgba(220,38,38,0.2);
+      border-radius: 9999px;
+      padding: 3px 10px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .conv-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .conv-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted, #9CA3AF);
+    }
+
+    /* ── Messages ── */
+    #messages {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      animation: fadeInUp 0.4s ease 0.1s both;
+    }
+
+    .message-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .message-row.user {
+      flex-direction: row-reverse;
+    }
+
+    .msg-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .msg-avatar.user-avatar {
+      background: linear-gradient(135deg, #DC2626, #EF4444, #F97316);
+      color: white;
+      font-size: 14px;
+      box-shadow: 0 4px 20px rgba(220,38,38,0.25);
+    }
+
+    .msg-avatar.ai-avatar {
+      background: var(--bg-card, #fff);
+      border: 1px solid var(--border-light, #E5E7EB);
+      color: #DC2626;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .msg-content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .message-row.user .msg-content {
+      align-items: flex-end;
+    }
+
+    .msg-role-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted, #9CA3AF);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0 4px;
+    }
+
+    .msg-bubble {
+      max-width: 100%;
+      padding: 12px 16px;
+      border-radius: 24px;
+      font-size: 0.9375rem;
+      line-height: 1.65;
+    }
+
+    .message-row.user .msg-bubble {
+      background: #DC2626;
+      color: #ffffff;
+      border-radius: 24px 24px 8px 24px;
+      max-width: 72%;
+      box-shadow: 0 4px 20px rgba(220,38,38,0.25);
+    }
+
+    .message-row.ai .msg-bubble {
+      background: var(--bg-message-ai, #fff);
+      color: var(--text-message-ai, #111827);
+      border: 1px solid var(--border-light, #E5E7EB);
+      border-radius: 24px 24px 24px 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      max-width: 88%;
+    }
+
+    /* ── Markdown styles ── */
+    .markdown-body { font-size: 0.9375rem; line-height: 1.7; }
+    .markdown-body p { margin-bottom: 12px; }
+    .markdown-body p:last-child { margin-bottom: 0; }
+    .markdown-body h1,.markdown-body h2,.markdown-body h3,
+    .markdown-body h4,.markdown-body h5,.markdown-body h6 {
+      font-weight: 700; line-height: 1.3; margin: 20px 0 8px; color: inherit;
+    }
+    .markdown-body h1 { font-size: 1.5em; }
+    .markdown-body h2 { font-size: 1.3em; }
+    .markdown-body h3 { font-size: 1.1em; }
+    .markdown-body ul, .markdown-body ol { margin: 10px 0; padding-left: 24px; }
+    .markdown-body li { margin-bottom: 4px; }
+    .markdown-body blockquote {
+      border-left: 3px solid #EF4444;
+      margin: 12px 0;
+      padding: 8px 16px;
+      background: rgba(220,38,38,0.07);
+      border-radius: 0 8px 8px 0;
+      color: var(--text-secondary, #6B7280);
+      font-style: italic;
+    }
+    .markdown-body strong { font-weight: 700; }
+    .markdown-body em { font-style: italic; }
+    .markdown-body a { color: #DC2626; text-decoration: underline; text-underline-offset: 2px; }
+    .markdown-body a:hover { text-decoration: none; }
+    .markdown-body hr { border: none; border-top: 1px solid var(--border-light, #E5E7EB); margin: 20px 0; }
+    .markdown-body table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.8125rem; }
+    .markdown-body th, .markdown-body td {
+      border: 1px solid var(--border-light, #E5E7EB);
+      padding: 8px 12px;
+      text-align: left;
+    }
+    .markdown-body th {
+      background: var(--bg-hover, #F1F5F9);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .markdown-body tr:nth-child(even) td { background: var(--bg-hover, #F1F5F9); }
+    .markdown-body code:not(pre > code) {
+      background: var(--bg-hover, #F1F5F9);
+      color: #DC2626;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono','Fira Code',Consolas,monospace;
+      font-size: 0.875em;
+      border: 1px solid var(--border-light, #E5E7EB);
+    }
+
+    /* ── Code blocks ── */
+    .code-block-wrap {
+      margin: 12px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #1E1E2E;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .code-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 14px;
+      background: rgba(0,0,0,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .code-block-lang {
+      font-size: 0.75rem;
+      color: #7D8590;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .code-copy-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 5px;
+      color: #7D8590;
+      font-size: 0.75rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .code-copy-btn:hover { background: rgba(255,255,255,0.14); color: #E2E8F0; }
+    .code-copy-btn.copied { color: #4ADE80; border-color: rgba(74,222,128,0.3); }
+    .code-block-wrap pre {
+      margin: 0; padding: 16px; overflow-x: auto;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 0.875em; line-height: 1.65;
+    }
+    .hljs { background: transparent !important; color: #CDD6F4; }
+
+    /* ── Error / Not found state ── */
+    .share-error {
+      text-align: center;
+      padding: 80px 24px;
+      color: var(--text-muted, #9CA3AF);
+    }
+    .share-error-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    .share-error-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    /* ── Footer ── */
+    .share-footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-light, #E5E7EB);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .share-footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-secondary, #6B7280);
+      font-size: 0.875rem;
+    }
+    .share-footer-brand strong { color: var(--text-primary); }
+    .share-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #DC2626, #EF4444, #F97316);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(220,38,38,0.25);
+      transition: all 0.2s ease;
+    }
+    .share-cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 40px rgba(220,38,38,0.35);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Dark mode ── */
+    [data-theme="dark"] {
+      --bg-hover: #1E2640;
+      --bg-active: #2A1F3D;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .share-container { padding: 24px 16px 60px; }
+      .conv-title { font-size: 1.375rem; }
+      .message-row.user .msg-bubble,
+      .message-row.ai .msg-bubble { max-width: 90%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Top bar ────────────────────────────────────────────── -->
+  <header class="share-topbar">
+    <a href="/" class="share-brand" aria-label="D-AI home">
+      <div class="share-brand-logo">D</div>
+      <span class="share-brand-name">D-AI</span>
+    </a>
+    <div class="share-topbar-right">
+      <span class="share-badge">Shared conversation</span>
+      <button class="theme-toggle-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── Main content ────────────────────────────────────────── -->
+  <main class="share-container" role="main">
+
+    <!-- Conversation title -->
+    <div class="conv-header" id="convHeader" style="display:none">
+      <div class="conv-header-badge">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
+        </svg>
+        Shared
+      </div>
+      <h1 class="conv-title" id="shareTitle">Shared Conversation</h1>
+      <div class="conv-subtitle" id="shareSubtitle">Read-only view · D-AI</div>
+    </div>
+
+    <!-- Messages -->
+    <section id="messages" role="log" aria-label="Conversation messages"></section>
+
+    <!-- Error state (hidden by default) -->
+    <div class="share-error" id="errorState" style="display:none">
+      <div class="share-error-icon">💬</div>
+      <div class="share-error-title" id="errorTitle">Share Not Found</div>
+      <p id="errorDesc">This shared conversation does not exist or is no longer public.</p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="share-footer" id="shareFooter" style="display:none">
+      <a href="/" class="share-footer-brand">
+        <div class="share-brand-logo" style="width:24px;height:24px;font-size:11px;border-radius:7px;box-shadow:none">N</div>
+        <span>Powered by <strong>D-AI</strong></span>
+      </a>
+      <a href="/" class="share-cta-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        Start your own chat
+      </a>
+    </footer>
+
+  </main>
+
+  <script>
+    // ── Markdown renderer ──────────────────────────────────────
+    if (window.marked) {
+      const renderer = new marked.Renderer();
+      renderer.code = (code, language) => {
+        const lang = (language || 'plaintext').trim();
+        let highlighted = '';
+        try {
+          highlighted = (lang && hljs.getLanguage(lang))
+            ? hljs.highlight(code, { language: lang }).value
+            : hljs.highlightAuto(code).value;
+        } catch (_) {
+          highlighted = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+        return `<div class="code-block-wrap">
+          <div class="code-block-header">
+            <span class="code-block-lang">${lang}</span>
+            <button class="code-copy-btn" onclick="copyCode(this)">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              Copy
+            </button>
+          </div>
+          <pre><code class="hljs language-${lang}">${highlighted}</code></pre>
+        </div>`;
+      };
+      marked.use({ renderer, breaks: true, gfm: true });
+    }
+
+    function copyCode(btn) {
+      const code = btn.closest('.code-block-wrap').querySelector('code').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+      });
+    }
+
+    // ── Theme ─────────────────────────────────────────────────
+    const themeBtn = document.getElementById('themeBtn');
+    const SVG_SUN  = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
+    const SVG_MOON = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>`;
+
+    function getTheme() { return localStorage.getItem('dai-theme') || 'light'; }
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('dai-theme', theme);
+      themeBtn.innerHTML = theme === 'dark' ? SVG_SUN : SVG_MOON;
+      themeBtn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+    }
+    themeBtn.addEventListener('click', () => applyTheme(getTheme() === 'dark' ? 'light' : 'dark'));
+    applyTheme(getTheme());
+
+    // ── Message renderer ──────────────────────────────────────
+    const messagesContainer = document.getElementById('messages');
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function addMessage(role, text) {
+      const row = document.createElement('div');
+      row.className = `message-row ${role === 'assistant' ? 'ai' : role}`;
+
+      const avatar = document.createElement('div');
+      avatar.className = role === 'user' ? 'msg-avatar user-avatar' : 'msg-avatar ai-avatar';
+      avatar.innerHTML = role === 'user'
+        ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+        : `✦`;
+      avatar.setAttribute('aria-hidden', 'true');
+
+      const content = document.createElement('div');
+      content.className = 'msg-content';
+
+      const label = document.createElement('div');
+      label.className = 'msg-role-label';
+      label.textContent = role === 'user' ? 'You' : 'D-AI';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble' + (role !== 'user' ? ' markdown-body' : '');
+
+      if (role === 'user') {
+        bubble.textContent = text;
+      } else {
+        bubble.innerHTML = DOMPurify.sanitize(marked.parse(text));
+      }
+
+      content.appendChild(label);
+      content.appendChild(bubble);
+      row.appendChild(avatar);
+      row.appendChild(content);
+      messagesContainer.appendChild(row);
+    }
+
+    // ── Load share data ───────────────────────────────────────
+    async function init() {
+      const pathParts = window.location.pathname.split('/');
+      const shareId   = pathParts[pathParts.length - 1];
+
+      try {
+        const res = await fetch(`/api/share/${shareId}`);
+        if (!res.ok) {
+          document.getElementById('errorState').style.display = 'block';
+          return;
+        }
+        const data = await res.json();
+
+        // Show title
+        document.getElementById('shareTitle').textContent = data.title || 'Shared Conversation';
+        document.title = `${data.title || 'Shared Conversation'} — D-AI`;
+        document.getElementById('shareSubtitle').textContent =
+          `Read-only view · ${data.message_count ?? data.messages?.length ?? 0} messages · D-AI`;
+        document.getElementById('convHeader').style.display = 'block';
+        document.getElementById('shareFooter').style.display = 'flex';
+
+        for (const m of (data.messages || [])) {
+          addMessage(m.role, m.content);
+        }
+      } catch (e) {
+        console.error(e);
+        document.getElementById('errorTitle').textContent = 'Error Loading Share';
+        document.getElementById('errorDesc').textContent  = 'Something went wrong. Please try again.';
+        document.getElementById('errorState').style.display = 'block';
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
