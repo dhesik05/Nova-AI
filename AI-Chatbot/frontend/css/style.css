@@ -1617,7 +1617,7 @@ body {
 }
 
 /* ============================================================
-   LOGIN OVERLAY
+   LOGIN OVERLAY (Name Login)
    ============================================================ */
 .login-overlay {
   position: fixed;
@@ -1628,28 +1628,208 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  padding: 20px;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 .login-overlay.hidden { display: none; }
+.login-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
 .login-box {
   background: var(--bg-card);
-  padding: 40px;
-  border-radius: var(--border-radius-xl);
-  box-shadow: var(--shadow-xl);
+  padding: 44px 36px;
+  border-radius: var(--border-radius-2xl, 24px);
+  box-shadow: 0 20px 60px rgba(124, 58, 237, 0.14), 0 4px 16px rgba(0, 0, 0, 0.04);
   text-align: center;
   border: 1px solid var(--border-light);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  max-width: 400px;
-  width: 90%;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  max-width: 420px;
+  width: 100%;
+  animation: modalPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+@keyframes modalPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .login-logo {
-  width: 64px; height: 64px; border-radius: var(--border-radius-lg);
+  width: 68px; height: 68px; border-radius: 20px;
   background: var(--gradient-brand);
-  color: white; font-size: 32px; font-weight: 800;
+  color: white; font-size: 34px; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 24px;
+  margin: 0 auto 20px;
   box-shadow: var(--shadow-brand);
+  animation: floatIcon 3s ease-in-out infinite;
 }
-.login-title { font-size: var(--font-size-2xl); font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
-.login-subtitle { color: var(--text-secondary); margin-bottom: 32px; font-size: var(--font-size-base); }
-.login-btn-wrap { display: flex; justify-content: center; }
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.login-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.login-subtitle {
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.name-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  text-align: left;
+}
+
+.name-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.name-input-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.name-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.name-input-icon {
+  position: absolute;
+  left: 14px;
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.name-input-field {
+  width: 100%;
+  padding: 14px 16px 14px 44px;
+  background: var(--bg-hover);
+  border: 1.5px solid var(--border-medium);
+  border-radius: var(--border-radius-lg);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.name-input-field:focus {
+  background: var(--bg-card);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 4px var(--brand-glow);
+}
+
+.name-input-field:focus + .name-input-icon,
+.name-input-wrapper:focus-within .name-input-icon {
+  color: var(--brand-primary);
+}
+
+.name-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 24px;
+  background: var(--gradient-brand);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--border-radius-lg);
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-brand);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.name-login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand-lg);
+}
+
+.name-login-btn:active {
+  transform: translateY(0);
+}
+
+.name-login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.name-login-btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.name-login-btn:hover svg {
+  transform: translateX(3px);
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ChatGPT Style Model Selector Pill */
+.model-selector-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.model-selector-pill select {
+  padding-right: 28px !important;
+}
+
+.model-select-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.topbar-new-chat-btn {
+  display: flex;
+}
+

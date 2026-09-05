@@ -76,5 +76,9 @@ class Token(BaseModel):
     token_type: str = "bearer"
     user: User
 
+class NameLoginRequest(BaseModel):
+    name: str
+
 class GoogleLoginRequest(BaseModel):
-    credential: str
+    credential: Optional[str] = None
+

@@ -74,9 +74,10 @@ const els = {
   newChatBtn:       document.getElementById('newChatBtn'),
 
   // Topbar
-  topbarTitle:   document.getElementById('topbar-title'),
-  modelSelect:   document.getElementById('modelSelect'),
-  topbarDivider: document.getElementById('topbarDivider'),
+  topbarTitle:      document.getElementById('topbar-title'),
+  topbarNewChatBtn: document.getElementById('topbarNewChatBtn'),
+  modelSelect:      document.getElementById('modelSelect'),
+  topbarDivider:    document.getElementById('topbarDivider'),
   shareBtn:      document.getElementById('shareBtn'),
   exportPdfBtn:  document.getElementById('exportPdfBtn'),
   exportTxtBtn:  document.getElementById('exportTxtBtn'),
@@ -238,6 +239,13 @@ els.newChatBtn.addEventListener('click', () => {
   if (window.innerWidth <= 768) closeSidebar();
 });
 
+if (els.topbarNewChatBtn) {
+  els.topbarNewChatBtn.addEventListener('click', () => {
+    clearChat();
+    if (window.innerWidth <= 768) closeSidebar();
+  });
+}
+
 async function refreshConversations() {
   try {
     const res  = await fetch('/api/history/conversations');
@@ -248,6 +256,8 @@ async function refreshConversations() {
     console.error('Failed to refresh conversations', e);
   }
 }
+window.refreshConversations = refreshConversations;
+
 
 function renderConversations(list) {
   els.conversationList.innerHTML = '';

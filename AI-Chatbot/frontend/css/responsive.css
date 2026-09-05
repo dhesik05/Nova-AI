@@ -1,6 +1,6 @@
 /* ============================================================
-   Nova AI — Responsive Stylesheet
-   Mobile-first breakpoints
+   Nova AI — Responsive Stylesheet (ChatGPT Mobile Polish)
+   Mobile-first breakpoints with touch optimization
    ============================================================ */
 
 /* ---- Tablet: ≤ 1024px ---- */
@@ -18,14 +18,20 @@
   }
 }
 
-/* ---- Small Tablet / Large Mobile: ≤ 768px ---- */
+/* ---- Small Tablet / Mobile: ≤ 768px ---- */
 @media (max-width: 768px) {
   :root {
-    --sidebar-width: 280px;
-    --topbar-height: 56px;
+    --sidebar-width: 290px;
+    --topbar-height: 54px;
   }
 
-  /* Sidebar becomes a floating drawer */
+  /* Full screen app layout with mobile viewport height support */
+  #app {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  /* Sidebar becomes a sliding drawer */
   #sidebar {
     position: fixed;
     left: 0;
@@ -34,127 +40,93 @@
     z-index: var(--z-sidebar);
     transform: translateX(-100%);
     border-right: 1px solid var(--border-light);
-    border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;
-    box-shadow: var(--shadow-xl);
+    border-radius: 0 var(--border-radius-xl, 20px) var(--border-radius-xl, 20px) 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   #sidebar.open {
     transform: translateX(0);
   }
 
-  /* Main takes full width on mobile */
+  /* Sidebar collapse close button visible on mobile drawer header */
+  .sidebar-collapse-btn {
+    display: flex;
+  }
+
+  /* Main takes full width */
   #main {
     width: 100%;
+    height: 100%;
   }
 
   #sidebarToggle {
     display: flex;
   }
 
+  /* ChatGPT style Topbar */
+  #topbar {
+    padding: 0 12px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .topbar-left {
+    gap: 8px;
+  }
+
+  .hidden-mobile {
+    display: none;
+  }
+
+  .model-selector-pill {
+    display: flex;
+  }
+
+  #modelSelect {
+    max-width: 140px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 28px 6px 12px;
+    background: var(--bg-hover);
+    border-radius: 9999px;
+    border: 1px solid var(--border-light);
+  }
+
+  .topbar-right {
+    gap: 6px;
+  }
+
+  .topbar-new-chat-btn {
+    display: flex;
+  }
+
   /* Welcome screen */
+  #welcomeScreen {
+    padding: 24px 16px 40px;
+  }
+
   .welcome-title {
-    font-size: var(--font-size-2xl);
+    font-size: 1.625rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   .welcome-subtitle {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
+    max-width: 90%;
   }
 
   .welcome-suggestions {
     grid-template-columns: 1fr;
     max-width: 100%;
+    gap: 10px;
   }
 
   .welcome-logo {
-    width: 60px;
-    height: 60px;
-  }
-
-  /* Chat area */
-  .chat-inner {
-    padding: 0 12px;
-    gap: 16px;
-  }
-
-  /* Messages */
-  .message-row.user .msg-bubble {
-    max-width: 88%;
-  }
-
-  .message-row.ai .msg-bubble {
-    max-width: 96%;
-  }
-
-  .msg-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-  }
-
-  /* Composer */
-  #composer {
-    padding: 10px 12px 14px;
-  }
-
-  .composer-actions-bar {
-    gap: 6px;
-  }
-
-  .composer-action-btn {
-    font-size: 11px;
-    padding: 4px 10px;
-  }
-
-  /* Topbar */
-  #topbar {
-    padding: 0 12px;
-  }
-
-  #topbar-title {
-    font-size: var(--font-size-sm);
-    max-width: 160px;
-  }
-
-  .topbar-right {
-    gap: 4px;
-  }
-
-  /* Hide model label text, keep select short */
-  #modelSelect {
-    max-width: 120px;
-    font-size: 11px;
-    padding: 5px 24px 5px 8px;
-  }
-
-  /* Hide some buttons on small screens */
-  #exportPdfBtn,
-  #exportTxtBtn {
-    display: none;
-  }
-
-  /* Toast adjustments */
-  #toastContainer {
-    top: auto;
-    bottom: 90px;
-    right: 12px;
-    left: 12px;
-  }
-
-  .toast {
-    min-width: unset;
-    max-width: 100%;
-  }
-}
-
-/* ---- Mobile: ≤ 480px ---- */
-@media (max-width: 480px) {
-  .welcome-title {
-    font-size: 1.625rem;
-  }
-
-  .welcome-logo {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
   }
 
   .welcome-logo svg {
@@ -162,34 +134,181 @@
     height: 28px;
   }
 
-  #welcomeScreen {
-    padding: 24px 16px;
-  }
-
   .suggestion-card {
-    padding: 12px;
+    padding: 12px 14px;
+    border-radius: 14px;
   }
 
-  /* Hide role labels on tiny screens */
+  .suggestion-icon {
+    font-size: 20px;
+  }
+
+  .suggestion-title {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .suggestion-desc {
+    font-size: 11.5px;
+  }
+
+  /* Chat Feed */
+  #chat {
+    padding-bottom: 8px;
+  }
+
+  .chat-inner {
+    padding: 12px 14px 20px;
+    gap: 18px;
+  }
+
+  /* Messages - ChatGPT Mobile Style */
+  .message-row {
+    gap: 10px;
+  }
+
+  .message-row.user .msg-bubble {
+    max-width: 88%;
+    padding: 11px 16px;
+    border-radius: 20px 20px 4px 20px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .message-row.ai .msg-bubble {
+    max-width: 100%;
+    padding: 12px 16px;
+    border-radius: 20px 20px 20px 4px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .msg-avatar {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+    border-radius: 50%;
+  }
+
   .msg-role-label {
     display: none;
   }
 
+  /* Composer - Floating Pill Style like ChatGPT Mobile */
+  #composer {
+    padding: 8px 12px max(12px, env(safe-area-inset-bottom, 12px));
+    background: transparent;
+  }
+
+  .composer-inner {
+    max-width: 100%;
+  }
+
   .composer-box {
-    padding: 10px 10px;
+    padding: 6px 8px 6px 10px;
+    border-radius: 26px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-medium);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    align-items: flex-end;
+  }
+
+  .composer-left-btns {
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .composer-icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+  }
+
+  .composer-icon-btn svg {
+    width: 17px;
+    height: 17px;
   }
 
   #messageInput {
-    font-size: var(--font-size-sm);
+    font-size: 15px; /* Prevents auto-zoom on iOS safari */
+    padding: 8px 8px;
+    min-height: 36px;
+    max-height: 140px;
+    line-height: 1.4;
   }
 
-  .code-block-wrap pre {
-    font-size: 0.8em;
+  .composer-right-btns {
+    margin-bottom: 2px;
   }
 
-  /* Stack topbar actions */
+  #sendBtn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--brand-primary);
+    color: #ffffff;
+    box-shadow: 0 2px 10px rgba(124, 58, 237, 0.35);
+  }
+
+  #sendBtn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .composer-hint {
+    display: none;
+  }
+
+  .composer-actions-bar {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .composer-action-btn {
+    font-size: 11.5px;
+    padding: 5px 12px;
+    border-radius: 9999px;
+  }
+
+  /* Hide secondary buttons in mobile topbar */
+  #exportPdfBtn,
+  #exportTxtBtn,
   #shareBtn {
     display: none;
+  }
+
+  /* Toast adjustments */
+  #toastContainer {
+    top: auto;
+    bottom: 80px;
+    right: 14px;
+    left: 14px;
+  }
+
+  .toast {
+    min-width: unset;
+    max-width: 100%;
+    border-radius: 12px;
+  }
+
+  /* Login modal on small mobile */
+  .login-box {
+    padding: 32px 24px;
+    border-radius: 20px;
+  }
+
+  .login-logo {
+    width: 58px;
+    height: 58px;
+    font-size: 28px;
+    border-radius: 16px;
+    margin-bottom: 16px;
+  }
+
+  .login-title {
+    font-size: 1.5rem;
   }
 }
 
@@ -202,6 +321,10 @@
   .welcome-suggestions {
     max-width: 680px;
   }
+
+  .composer-inner {
+    max-width: 860px;
+  }
 }
 
 /* ---- Extra large: ≥ 1600px ---- */
@@ -211,6 +334,10 @@
   }
 
   .chat-inner {
+    max-width: 920px;
+  }
+
+  .composer-inner {
     max-width: 920px;
   }
 }

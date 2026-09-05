@@ -51,6 +51,37 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         raise credentials_exception
     return user
 
+@router.post("/login", response_model=schemas.Token)
+def login_with_name(req: schemas.NameLoginRequest, db: Session = Depends(get_db)):
+    """
+    Direct Name Login: Anyone can enter their name to start chatting immediately.
+    """
+    clean_name = (req.name or "").strip()
+    if not clean_name:
+        clean_name = "Nova User"
+    
+    # Check if a user with this name already exists or create one
+    user = db.query(models.User).filter(models.User.name == clean_name).first()
+    
+    if not user:
+        user_id_str = f"usr-{uuid.uuid4().hex[:10]}"
+        user = models.User(
+            google_id=user_id_str,
+            email=f"{clean_name.lower().replace(' ', '_')}@nova.local",
+            name=clean_name,
+            profile_picture=""
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    else:
+        user.last_login = datetime.now(timezone.utc)
+        db.commit()
+        db.refresh(user)
+
+    access_token = create_access_token(data={"sub": user.id})
+    return {"access_token": access_token, "token_type": "bearer", "user": user}
+
 @router.post("/google", response_model=schemas.Token)
 def google_auth(req: schemas.GoogleLoginRequest, db: Session = Depends(get_db)):
     try:
