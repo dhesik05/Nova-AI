@@ -1189,10 +1189,6 @@ async function speakText(text, btn) {
 
 // PDF upload
 els.attachBtn.addEventListener('click', () => {
-  if (!state.activeConversationId) {
-    showToast('Start a conversation first, then attach a PDF', 'warning');
-    return;
-  }
   els.pdfInput.click();
 });
 
@@ -1202,22 +1198,37 @@ els.pdfInput.addEventListener('change', async function () {
 
   const orig = els.attachBtn.innerHTML;
   els.attachBtn.disabled = true;
-  els.attachBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-9-9"/></svg>`;
+  els.attachBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="spin-icon"><path d="M21 12a9 9 0 1 1-9-9"/></svg>`;
 
   const fd = new FormData();
   fd.append('file', file);
-  fd.append('conversation_id', state.activeConversationId);
+  if (state.activeConversationId) {
+    fd.append('conversation_id', state.activeConversationId);
+  }
+
+  showToast(`Indexing "${file.name}"…`, 'info');
 
   try {
     const res  = await fetch('/api/upload/pdf', { method: 'POST', body: fd });
     const data = await res.json();
     if (data.success) {
-      addSystemMessage(`📄 Indexed "${file.name}" (${data.chunks} chunks). You can now ask questions about it.`);
-      showToast(`"${file.name}" indexed successfully`, 'success');
+      if (data.conversation_id && !state.activeConversationId) {
+        state.activeConversationId = data.conversation_id;
+        els.topbarTitle.textContent = `Doc: ${file.name}`;
+        setTopbarChatButtons(true);
+        if (typeof window.refreshConversations === 'function') {
+          window.refreshConversations();
+        }
+      }
+      hideWelcome();
+      addSystemMessage(`📄 **"${file.name}"** successfully indexed (${data.chunks} segments). You can now ask any questions about this document!`);
+      showToast(`"${file.name}" indexed successfully!`, 'success');
+      els.messageInput.focus();
     } else {
-      showToast('Upload failed: ' + (data.detail || data.error || 'unknown'), 'error');
+      showToast('Upload failed: ' + (data.detail || data.message || 'unknown error'), 'error');
     }
   } catch (e) {
+    console.error('PDF upload error:', e);
     showToast('Error uploading PDF: ' + e.message, 'error');
   } finally {
     els.attachBtn.innerHTML = orig;
@@ -1234,30 +1245,48 @@ if (els.imageBtn && els.imageInput) {
     const file = e.target.files[0];
     if (!file) return;
 
-    const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+    const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'];
     if (!validTypes.includes(file.type)) {
-      showToast('Invalid image type (use PNG/JPG/WEBP)', 'error');
+      showToast('Please select a PNG, JPG, WEBP, or GIF image.', 'error');
       return;
     }
+
+    const orig = els.imageBtn.innerHTML;
+    els.imageBtn.disabled = true;
+    els.imageBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="spin-icon"><path d="M21 12a9 9 0 1 1-9-9"/></svg>`;
 
     showToast(`Uploading ${file.name}…`, 'info');
     const fd = new FormData();
     fd.append('file', file);
+    if (state.activeConversationId) {
+      fd.append('conversation_id', state.activeConversationId);
+    }
 
     try {
-      const res = await fetch('/upload/image', { method: 'POST', body: fd });
+      const res = await fetch('/api/upload/image', { method: 'POST', body: fd });
       const data = await res.json();
       if (data.success) {
-        showToast('Image uploaded successfully!', 'success');
-        els.messageInput.value += `\n[Image attached: ${file.name}]`;
+        if (data.conversation_id && !state.activeConversationId) {
+          state.activeConversationId = data.conversation_id;
+          setTopbarChatButtons(true);
+          if (typeof window.refreshConversations === 'function') {
+            window.refreshConversations();
+          }
+        }
+        showToast('Image attached successfully!', 'success');
+        els.messageInput.value = (els.messageInput.value + `\n[Image attached: ${file.name}] `).trim();
         autoResize(els.messageInput);
+        updateCharCounter();
+        els.messageInput.focus();
       } else {
-        showToast(data.message || 'Image upload failed', 'error');
+        showToast(data.message || data.detail || 'Image upload failed', 'error');
       }
     } catch (err) {
       console.error('Image upload error:', err);
       showToast('Network error during upload', 'error');
     } finally {
+      els.imageBtn.innerHTML = orig;
+      els.imageBtn.disabled  = false;
       els.imageInput.value = '';
     }
   });

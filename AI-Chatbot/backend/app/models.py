@@ -74,3 +74,35 @@ class Share(Base):
     created_at = Column(DateTime(timezone=True), default=_utcnow)
     expires_at = Column(DateTime(timezone=True), nullable=True)
     is_public = Column(Boolean, default=True)
+
+
+class DocumentChunk(Base):
+    __tablename__ = "document_chunks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    conversation_id = Column(
+        Integer,
+        ForeignKey("conversations.id", ondelete="CASCADE"),
+        index=True,
+    )
+    filename = Column(String)
+    page_number = Column(Integer, default=1)
+    chunk_text = Column(Text)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+
+
+class ImageAttachment(Base):
+    __tablename__ = "image_attachments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    conversation_id = Column(
+        Integer,
+        ForeignKey("conversations.id", ondelete="CASCADE"),
+        index=True,
+        nullable=True,
+    )
+    filename = Column(String)
+    mime_type = Column(String, default="image/png")
+    data_base64 = Column(Text)
+    created_at = Column(DateTime(timezone=True), default=_utcnow)
+

@@ -3,6 +3,7 @@ import platform
 import base64
 import wave
 import contextlib
+from typing import Optional
 
 from fastapi import FastAPI, Body, UploadFile, File, Form, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -252,48 +253,32 @@ def create_app() -> FastAPI:
             db.close()
 
     @app.post("/upload/image")
-    def upload_image_root(file: UploadFile = File(...), current_user: User = Depends(get_current_user)):
-        """
-        Upload an image. For Vercel, this is an in-memory operation.
-        Locally, it persists to backend/uploads/.
-        """
-        contents = file.file.read()
-        if not contents:
-            return {
-                "success": False,
-                "error_code": "EMPTY_FILE",
-                "message": "Uploaded image file is empty.",
-                "feature": "upload-image",
-                "status": 400,
-            }
+    def upload_image_root(
+        conversation_id: Optional[int] = Form(None),
+        file: UploadFile = File(...),
+        current_user: User = Depends(get_current_user)
+    ):
+        """Root compatibility endpoint for image upload."""
+        db = SessionLocal()
+        try:
+            from .routes.upload import upload_image as _upload_img
+            return _upload_img(conversation_id=conversation_id, file=file, db=db, current_user=current_user)
+        finally:
+            db.close()
 
-        if IS_VERCEL:
-            # In Vercel, don't save to disk. Return a success response.
-            return {
-                "success": True,
-                "filename": file.filename,
-                "saved_path": None, # No path in ephemeral environment
-                "status": "uploaded (in-memory)",
-            }
-
-        # Local development: save to disk
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-        uploads_dir = os.path.join(project_root, "backend", "uploads")
-        # No need for os.makedirs, handled at startup
-
-        safe_name = file.filename or "upload.bin"
-        safe_name = safe_name.replace("..", "").replace("\\", "_").replace("/", "_")
-
-        saved_path = os.path.join(uploads_dir, safe_name)
-        with open(saved_path, "wb") as f:
-            f.write(contents)
-
-        return {
-            "success": True,
-            "filename": file.filename,
-            "saved_path": os.path.abspath(saved_path),
-            "status": "uploaded",
-        }
+    @app.post("/upload/pdf")
+    def upload_pdf_root(
+        conversation_id: Optional[int] = Form(None),
+        file: UploadFile = File(...),
+        current_user: User = Depends(get_current_user)
+    ):
+        """Root compatibility endpoint for PDF upload."""
+        db = SessionLocal()
+        try:
+            from .routes.upload import upload_pdf as _upload_p
+            return _upload_p(conversation_id=conversation_id, file=file, db=db, current_user=current_user)
+        finally:
+            db.close()
 
     @app.post("/speech-to-text")
     async def speech_to_text_root(
