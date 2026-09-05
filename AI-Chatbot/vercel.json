@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "ai-chatbot",
+  "name": "nova-ai",
   "builds": [
     {
       "src": "/api/index.py",

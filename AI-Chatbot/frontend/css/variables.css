@@ -1,63 +1,66 @@
 /* ============================================================
-   Nova AI — Design Tokens & CSS Variables
+   Nova AI — Design Tokens & CSS Variables (Purple & White Theme)
    ============================================================ */
 
 :root {
-  /* Brand */
-  --brand-primary: #DC2626;
-  --brand-secondary: #EF4444;
-  --brand-tertiary: #FCA5A5;
-  --brand-glow: rgba(220, 38, 38, 0.15);
-  --brand-glow-strong: rgba(220, 38, 38, 0.3);
+  /* Brand - Regal Purple & Violet */
+  --brand-primary: #7C3AED;
+  --brand-secondary: #8B5CF6;
+  --brand-tertiary: #C4B5FD;
+  --brand-dark: #6D28D9;
+  --brand-light: #F5F3FF;
+  --brand-glow: rgba(124, 58, 237, 0.15);
+  --brand-glow-strong: rgba(124, 58, 237, 0.35);
 
   /* Gradients */
-  --gradient-brand: linear-gradient(135deg, #DC2626, #EF4444, #F97316);
-  --gradient-brand-soft: linear-gradient(135deg, rgba(220,38,38,0.1), rgba(249,115,22,0.05));
-  --gradient-hero: linear-gradient(180deg, #fff1f1 0%, #f8fafc 100%);
-  --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.3));
+  --gradient-brand: linear-gradient(135deg, #7C3AED 0%, #8B5CF6 50%, #A855F7 100%);
+  --gradient-brand-soft: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(168, 85, 247, 0.04));
+  --gradient-hero: linear-gradient(180deg, #FAF5FF 0%, #FFFFFF 60%, #F8FAFC 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.5));
+  --gradient-card: linear-gradient(180deg, #FFFFFF 0%, #FAF8FF 100%);
 
-  /* Light mode backgrounds */
-  --bg-page: #F8FAFC;
+  /* Light mode backgrounds - Clean Crisp White with Subtle Violet Hue */
+  --bg-page: #FDFCFF;
   --bg-sidebar: #FFFFFF;
-  --bg-main: #F8FAFC;
+  --bg-main: #FDFCFF;
   --bg-card: #FFFFFF;
   --bg-input: #FFFFFF;
-  --bg-hover: #F1F5F9;
-  --bg-active: #FFF1F1;
-  --bg-active-strong: #FFE4E4;
-  --bg-message-user: #DC2626;
+  --bg-hover: #F6F3FE;
+  --bg-active: #EFEBFF;
+  --bg-active-strong: #DDD4FC;
+  --bg-message-user: linear-gradient(135deg, #7C3AED, #8B5CF6);
   --bg-message-ai: #FFFFFF;
-  --bg-code: #1E1E2E;
-  --bg-glass: rgba(255,255,255,0.6);
-  --bg-overlay: rgba(0,0,0,0.4);
-  --bg-skeleton: #E2E8F0;
-  --bg-skeleton-shine: #F8FAFC;
+  --bg-code: #181528;
+  --bg-glass: rgba(255, 255, 255, 0.75);
+  --bg-overlay: rgba(15, 10, 30, 0.45);
+  --bg-skeleton: #EAE6F8;
+  --bg-skeleton-shine: #FAF8FF;
 
   /* Text */
-  --text-primary: #111827;
-  --text-secondary: #6B7280;
-  --text-muted: #9CA3AF;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
   --text-inverse: #FFFFFF;
-  --text-link: #DC2626;
+  --text-link: #7C3AED;
   --text-message-user: #FFFFFF;
-  --text-message-ai: #111827;
-  --text-code: #E2E8F0;
+  --text-message-ai: #0F172A;
+  --text-code: #F1F0FB;
 
   /* Borders */
-  --border-light: #E5E7EB;
-  --border-medium: #D1D5DB;
-  --border-strong: #9CA3AF;
-  --border-brand: rgba(220, 38, 38, 0.3);
-  --border-focus: #DC2626;
+  --border-light: #EDE9FE;
+  --border-medium: #DDD6FE;
+  --border-strong: #C4B5FD;
+  --border-brand: rgba(124, 58, 237, 0.25);
+  --border-focus: #7C3AED;
 
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-  --shadow-lg: 0 10px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
-  --shadow-xl: 0 20px 60px rgba(0,0,0,0.16), 0 8px 24px rgba(0,0,0,0.08);
-  --shadow-brand: 0 4px 20px rgba(220,38,38,0.25);
-  --shadow-brand-lg: 0 8px 40px rgba(220,38,38,0.35);
-  --shadow-glow: 0 0 20px rgba(220,38,38,0.2), 0 0 60px rgba(220,38,38,0.08);
+  /* Shadows - Elegant Purple Glows */
+  --shadow-sm: 0 1px 3px rgba(124, 58, 237, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 4px 14px rgba(124, 58, 237, 0.07), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 30px rgba(124, 58, 237, 0.1), 0 4px 12px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 20px 50px rgba(124, 58, 237, 0.14), 0 8px 24px rgba(0, 0, 0, 0.06);
+  --shadow-brand: 0 4px 20px rgba(124, 58, 237, 0.28);
+  --shadow-brand-lg: 0 8px 36px rgba(124, 58, 237, 0.38);
+  --shadow-glow: 0 0 24px rgba(124, 58, 237, 0.2), 0 0 60px rgba(139, 92, 246, 0.1);
 
   /* Dimensions */
   --sidebar-width: 280px;
@@ -98,35 +101,35 @@
    DARK MODE
    ============================================================ */
 [data-theme="dark"] {
-  --bg-page: #0F1117;
-  --bg-sidebar: #161B27;
-  --bg-main: #0F1117;
-  --bg-card: #1C2333;
-  --bg-input: #1C2333;
-  --bg-hover: #1E2640;
-  --bg-active: #2A1F3D;
-  --bg-active-strong: #3A1F2F;
-  --bg-message-user: #DC2626;
-  --bg-message-ai: #1C2333;
-  --bg-glass: rgba(22,27,39,0.8);
-  --bg-skeleton: #1C2333;
-  --bg-skeleton-shine: #243047;
+  --bg-page: #0B0814;
+  --bg-sidebar: #110D20;
+  --bg-main: #0B0814;
+  --bg-card: #18132B;
+  --bg-input: #18132B;
+  --bg-hover: #221A3D;
+  --bg-active: #2C2152;
+  --bg-active-strong: #3E2F72;
+  --bg-message-user: linear-gradient(135deg, #7C3AED, #8B5CF6);
+  --bg-message-ai: #18132B;
+  --bg-glass: rgba(17, 13, 32, 0.85);
+  --bg-skeleton: #1D1735;
+  --bg-skeleton-shine: #29204A;
 
-  --text-primary: #F1F5F9;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --text-message-ai: #E2E8F0;
+  --text-primary: #F8FAFC;
+  --text-secondary: #A78BFA;
+  --text-muted: #6B7280;
+  --text-message-ai: #EDE9FE;
 
-  --border-light: #1E2640;
-  --border-medium: #243047;
-  --border-strong: #334155;
-  --border-focus: #EF4444;
+  --border-light: #221A3D;
+  --border-medium: #2E2353;
+  --border-strong: #4C3886;
+  --border-focus: #8B5CF6;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
-  --shadow-lg: 0 10px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
-  --shadow-xl: 0 20px 60px rgba(0,0,0,0.6), 0 8px 24px rgba(0,0,0,0.4);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.5);
 
-  --gradient-hero: linear-gradient(180deg, rgba(220,38,38,0.08) 0%, #0F1117 100%);
-  --gradient-glass: linear-gradient(135deg, rgba(28,35,51,0.9), rgba(22,27,39,0.7));
+  --gradient-hero: linear-gradient(180deg, rgba(124, 58, 237, 0.16) 0%, #0B0814 100%);
+  --gradient-glass: linear-gradient(135deg, rgba(24, 19, 43, 0.9), rgba(17, 13, 32, 0.8));
 }

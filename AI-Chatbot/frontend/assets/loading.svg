@@ -1,48 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" fill="none">
   <defs>
     <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#DC2626"/>
-      <stop offset="100%" stop-color="#EF4444"/>
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="50%" stop-color="#8B5CF6"/>
+      <stop offset="100%" stop-color="#A855F7"/>
     </linearGradient>
     <linearGradient id="pulse-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#DC2626" stop-opacity="0.2"/>
-      <stop offset="100%" stop-color="#EF4444" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#7C3AED" stop-opacity="0"/>
     </linearGradient>
   </defs>
 
-  <!-- Pulsing rings -->
-  <circle cx="60" cy="60" r="55" fill="none" stroke="#DC2626" stroke-width="1" stroke-opacity="0.15">
-    <animate attributeName="r" values="45;55;45" dur="2.5s" repeatCount="indefinite"/>
-    <animate attributeName="stroke-opacity" values="0.3;0.08;0.3" dur="2.5s" repeatCount="indefinite"/>
+  <!-- Pulsing outer rings -->
+  <circle cx="60" cy="60" r="55" fill="none" stroke="#7C3AED" stroke-width="1" stroke-opacity="0.2">
+    <animate attributeName="r" values="46;56;46" dur="2.4s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.35;0.08;0.35" dur="2.4s" repeatCount="indefinite"/>
   </circle>
-  <circle cx="60" cy="60" r="48" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-opacity="0.2">
-    <animate attributeName="r" values="38;48;38" dur="2s" repeatCount="indefinite"/>
-    <animate attributeName="stroke-opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite"/>
+  <circle cx="60" cy="60" r="48" fill="none" stroke="#8B5CF6" stroke-width="1.5" stroke-opacity="0.25">
+    <animate attributeName="r" values="40;49;40" dur="2s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.45;0.12;0.45" dur="2s" repeatCount="indefinite"/>
   </circle>
 
   <!-- Background disc -->
-  <circle cx="60" cy="60" r="38" fill="white" stroke="#F3F4F6" stroke-width="1"/>
+  <circle cx="60" cy="60" r="38" fill="#FFFFFF" stroke="#EDE9FE" stroke-width="1.5"/>
   <circle cx="60" cy="60" r="38" fill="url(#pulse-grad)"/>
 
-  <!-- D letterform (centered) -->
-  <path d="M36 36 H54 C68 36 76 46 76 60 C76 74 68 84 54 84 H36 Z"
+  <!-- N letterform (centered) -->
+  <path d="M43 72 V48 H49 L65 65 V48 H71 V72 H65 L49 55 V72 Z"
         fill="url(#grad)"/>
-  <!-- Inner D cutout -->
-  <path d="M44 44 H52 C63 44 67 51 67 60 C67 69 63 76 52 76 H44 Z"
-        fill="white"/>
 
   <!-- AI node dots with pulse -->
-  <circle cx="82" cy="38" r="4" fill="#EF4444" opacity="0.9">
+  <circle cx="82" cy="38" r="4" fill="#A855F7" opacity="0.9">
     <animate attributeName="opacity" values="0.9;0.4;0.9" dur="1.8s" repeatCount="indefinite"/>
   </circle>
-  <circle cx="90" cy="52" r="2.5" fill="#DC2626" opacity="0.7">
-    <animate attributeName="opacity" values="0.7;0.3;0.7" dur="1.4s" repeatCount="indefinite" begin="0.3s"/>
+  <circle cx="90" cy="52" r="2.5" fill="#7C3AED" opacity="0.75">
+    <animate attributeName="opacity" values="0.75;0.3;0.75" dur="1.4s" repeatCount="indefinite" begin="0.3s"/>
   </circle>
-  <circle cx="86" cy="30" r="2" fill="#EF4444" opacity="0.6">
-    <animate attributeName="opacity" values="0.6;0.2;0.6" dur="1.6s" repeatCount="indefinite" begin="0.6s"/>
+  <circle cx="86" cy="30" r="2" fill="#8B5CF6" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;0.2;0.7" dur="1.6s" repeatCount="indefinite" begin="0.6s"/>
   </circle>
 
   <!-- Connecting lines -->
-  <line x1="82" y1="38" x2="90" y2="52" stroke="#EF4444" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/>
-  <line x1="82" y1="38" x2="86" y2="30" stroke="#DC2626" stroke-width="1.5" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="82" y1="38" x2="90" y2="52" stroke="#8B5CF6" stroke-width="1.5" stroke-opacity="0.6" stroke-linecap="round"/>
+  <line x1="82" y1="38" x2="86" y2="30" stroke="#7C3AED" stroke-width="1.5" stroke-opacity="0.5" stroke-linecap="round"/>
 </svg>

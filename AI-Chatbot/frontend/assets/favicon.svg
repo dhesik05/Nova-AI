@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none">
   <defs>
     <linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#DC2626"/>
-      <stop offset="100%" stop-color="#EF4444"/>
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#A855F7"/>
     </linearGradient>
   </defs>
 
-  <!-- Background -->
-  <rect width="32" height="32" rx="8" fill="white"/>
+  <!-- Clean white background with smooth corners -->
+  <rect width="32" height="32" rx="8" fill="#FFFFFF"/>
 
-  <!-- N letterform -->
+  <!-- Purple N monogram -->
   <path d="M7 24 V8 H11 L21 19 V8 H25 V24 H21 L11 13 V24 Z"
         fill="url(#fg)"/>
 
   <!-- AI spark accent -->
-  <circle cx="27" cy="6" r="2.5" fill="#EF4444"/>
-  <circle cx="27" cy="6" r="1.2" fill="white"/>
+  <circle cx="27" cy="6" r="2.5" fill="#8B5CF6"/>
+  <circle cx="27" cy="6" r="1.2" fill="#FFFFFF"/>
 </svg>
