@@ -1,7 +1,7 @@
 # ✨ Nova AI — Intelligent Conversational Assistant & Document RAG Platform
 
 <p align="center">
-  <img src="frontend/assets/logo.svg" alt="Nova AI Logo" width="90" height="90" />
+  <img src="AI-Chatbot/frontend/assets/logo.svg" alt="Nova AI Logo" width="90" height="90" />
 </p>
 
 <p align="center">
@@ -46,39 +46,44 @@
 ## 🏗️ Architecture & Project Structure
 
 ```text
-AI-Chatbot/
-├── .env.example            # Environment template
-├── start.ps1               # One-click Windows PowerShell launcher
-├── start.bat               # Windows Batch launcher
-├── verify.py               # Diagnostics & system verification script
-├── requirements.txt        # Full application dependencies
-├── vercel.json             # Subfolder Vercel deployment configuration
+Nova-AI/
+├── vercel.json                 # Vercel deployment configuration (Root)
+├── requirements.txt            # Root build dependencies
 ├── api/
-│   └── index.py            # Subfolder serverless entrypoint
-├── backend/
-│   ├── app/
-│   │   ├── main.py         # FastAPI application factory & routes
-│   │   ├── config.py       # Pydantic environment configuration
-│   │   ├── database.py     # SQLAlchemy engine & SQLite setup
-│   │   ├── models.py       # ORM Models (User, Conversation, Message, DocumentChunk)
-│   │   ├── schemas.py      # Pydantic request/response schemas
-│   │   ├── ai.py           # Groq client, dynamic model discovery & streaming
-│   │   ├── auth.py         # JWT tokens & Name login endpoint
-│   │   ├── rag.py          # PyMuPDF parser, chunking & relevance search
-│   │   ├── speech.py       # Speech-to-text & transcription utilities
-│   │   └── routes/         # Modular route handlers (chat, upload, history, export, share)
-│   └── tests/              # Pytest test suite (15/15 unit tests)
-└── frontend/
-    ├── index.html          # Main SPA interface
-    ├── share.html          # Public conversation viewer
-    ├── assets/             # SVG Logos, Favicons, and Vector Graphics
-    ├── css/
-    │   ├── variables.css   # CSS design tokens & purple theme variables
-    │   ├── style.css       # Core design system & component styles
-    │   └── responsive.css  # ChatGPT-inspired mobile layout styles
-    └── js/
-        ├── auth.js         # Name Login & JWT token manager
-        └── app.js          # Core application logic & UI streaming
+│   └── index.py                # Root serverless function entrypoint
+└── AI-Chatbot/
+    ├── .env.example            # Environment template
+    ├── start.ps1               # One-click Windows PowerShell launcher
+    ├── start.bat               # Windows Batch launcher
+    ├── verify.py               # Diagnostics & system verification script
+    ├── requirements.txt        # Full application dependencies
+    ├── vercel.json             # Subfolder Vercel deployment configuration
+    ├── api/
+    │   └── index.py            # Subfolder serverless entrypoint
+    ├── backend/
+    │   ├── app/
+    │   │   ├── main.py         # FastAPI application factory & routes
+    │   │   ├── config.py       # Pydantic environment configuration
+    │   │   ├── database.py     # SQLAlchemy engine & SQLite setup
+    │   │   ├── models.py       # ORM Models (User, Conversation, Message, DocumentChunk)
+    │   │   ├── schemas.py      # Pydantic request/response schemas
+    │   │   ├── ai.py           # Groq client, dynamic model discovery & streaming
+    │   │   ├── auth.py         # JWT tokens & Name login endpoint
+    │   │   ├── rag.py          # PyMuPDF parser, chunking & relevance search
+    │   │   ├── speech.py       # Speech-to-text & transcription utilities
+    │   │   └── routes/         # Modular route handlers (chat, upload, history, export, share)
+    │   └── tests/              # Pytest test suite (15/15 unit tests)
+    └── frontend/
+        ├── index.html          # Main SPA interface
+        ├── share.html          # Public conversation viewer
+        ├── assets/             # SVG Logos, Favicons, and Vector Graphics
+        ├── css/
+        │   ├── variables.css   # CSS design tokens & purple theme variables
+        │   ├── style.css       # Core design system & component styles
+        │   └── responsive.css  # ChatGPT-inspired mobile layout styles
+        └── js/
+            ├── auth.js         # Name Login & JWT token manager
+            └── app.js          # Core application logic & UI streaming
 ```
 
 ---
@@ -89,7 +94,13 @@ AI-Chatbot/
 * **Python**: `3.10` or newer
 * **Groq API Key**: Obtain a free API key at [console.groq.com](https://console.groq.com)
 
-### 1. Configure Environment Variables
+### 1. Clone the Repository
+```bash
+git clone https://github.com/dhesik05/Nova-AI.git
+cd Nova-AI/AI-Chatbot
+```
+
+### 2. Configure Environment Variables
 Create a `.env` file in `AI-Chatbot/`:
 ```bash
 cp .env.example .env
@@ -103,7 +114,7 @@ JWT_SECRET_KEY=generate_a_random_32_character_secret_key
 CORS_ORIGINS=*
 ```
 
-### 2. Launch the Application
+### 3. Launch the Application
 
 #### On Windows (PowerShell):
 ```powershell
@@ -151,7 +162,7 @@ pytest backend/tests
 4. Under **Environment Variables**, add:
    * `GROQ_API_KEY`: Your Groq API key.
    * `JWT_SECRET_KEY`: A random secret string (e.g. `nova_secret_key_2026`).
-5. Click **Deploy**.
+5. Click **Deploy**. Both root `./` and subfolder `AI-Chatbot/` configurations are supported automatically.
 
 ---
 
