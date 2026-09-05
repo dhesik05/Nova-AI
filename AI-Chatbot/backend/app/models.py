@@ -32,7 +32,7 @@ class Conversation(Base):
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), index=True)
 
     title = Column(String, default="New chat")
-    model = Column(String, default="llama-3.1-8b-instant")
+    model = Column(String, default="openai/gpt-oss-120b")
 
     system_prompt = Column(Text, default="")
 

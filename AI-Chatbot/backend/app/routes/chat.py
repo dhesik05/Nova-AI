@@ -9,7 +9,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
 from .. import schemas
-from ..ai import AVAILABLE_MODELS, MODEL_LABELS, DEFAULT_MODEL, stream_chat, auto_title
+from ..ai import get_available_models, DEFAULT_MODEL, stream_chat, auto_title
 from ..database import SessionLocal
 from ..models import Conversation, Message, User
 from ..auth import get_current_user
@@ -37,10 +37,11 @@ def _utcnow() -> datetime:
 
 @router.get("/models")
 def list_models():
+    models, labels, default_m = get_available_models()
     return {
-        "models":  AVAILABLE_MODELS,
-        "labels":  MODEL_LABELS,
-        "default": DEFAULT_MODEL,
+        "models":  models,
+        "labels":  labels,
+        "default": default_m,
     }
 
 
@@ -155,10 +156,12 @@ def chat_stream(req: schemas.ChatRequest, db: Session = Depends(get_db), current
     _conv_id   = conversation_id
     _is_new    = is_new_conversation
     _user_msg  = req.message
+    _model     = model or DEFAULT_MODEL
 
     # ── 7. SSE generator ──────────────────────────────────────────────────────
     async def _events() -> AsyncIterator[bytes]:
         assistant_text = ""
+        active_model = _model
 
         # Emit conversation_id immediately so the frontend can bind it
         yield (
@@ -167,17 +170,9 @@ def chat_stream(req: schemas.ChatRequest, db: Session = Depends(get_db), current
         ).encode()
 
         try:
-            if not model:
-                raise ValueError("No model resolved for this conversation.")
-            if model not in AVAILABLE_MODELS:
-                raise ValueError(
-                    f"Model '{model}' is not available. "
-                    f"Choose one of: {', '.join(AVAILABLE_MODELS)}"
-                )
-
             async for delta in stream_chat(
                 messages=messages,
-                model=model,
+                model=active_model,
                 temperature=req.temperature,
                 top_p=req.top_p,
                 max_tokens=req.max_tokens,
@@ -206,7 +201,7 @@ def chat_stream(req: schemas.ChatRequest, db: Session = Depends(get_db), current
                 ).encode()
 
             # ── Persist assistant reply in a fresh session ────────────────────
-            _persist_assistant_message(_conv_id, assistant_text, model)
+            _persist_assistant_message(_conv_id, assistant_text, active_model)
 
             # ── Auto-title: fire-and-forget via asyncio task ──────────────────
             if _is_new and _user_msg:
@@ -223,7 +218,7 @@ def chat_stream(req: schemas.ChatRequest, db: Session = Depends(get_db), current
             err_msg = str(exc) or exc.__class__.__name__
             # Attempt to still persist whatever was generated
             if assistant_text:
-                _persist_assistant_message(_conv_id, assistant_text, model)
+                _persist_assistant_message(_conv_id, assistant_text, active_model)
             yield (
                 json.dumps({
                     "conversation_id": _conv_id,

@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     cors_origins: str = Field("*", alias="CORS_ORIGINS")
 
     # Models
-    default_model: str = Field("llama-3.3-70b-versatile", alias="DEFAULT_MODEL")
+    default_model: str = Field("openai/gpt-oss-120b", alias="DEFAULT_MODEL")
 
     # RAG / storage
     embedding_model_name: str = Field(

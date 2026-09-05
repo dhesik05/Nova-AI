@@ -185,11 +185,11 @@ function showToast(message, type = 'info', duration = 3500) {
 const SVG_SUN  = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`;
 const SVG_MOON = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>`;
 
-function getTheme() { return localStorage.getItem('dai-theme') || 'light'; }
+function getTheme() { return localStorage.getItem('nova-theme') || localStorage.getItem('dai-theme') || 'light'; }
 
 function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('dai-theme', theme);
+  localStorage.setItem('nova-theme', theme);
   els.themeBtn.innerHTML   = theme === 'dark' ? SVG_SUN : SVG_MOON;
   els.themeBtn.title       = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
 }
@@ -407,13 +407,13 @@ async function fetchModels() {
       els.modelSelect.appendChild(opt);
     }
     // Restore persisted model selection
-    const saved = localStorage.getItem('dai-model');
+    const saved = localStorage.getItem('nova-model');
     if (saved) setModelValue(saved);
     else if (data.default) setModelValue(data.default);
   } catch (e) {
     console.error('Failed to fetch models', e);
     const opt = document.createElement('option');
-    opt.value = opt.textContent = 'llama-3.1-8b-instant';
+    opt.value = opt.textContent = 'openai/gpt-oss-120b';
     els.modelSelect.appendChild(opt);
   }
 }
@@ -428,7 +428,7 @@ function setModelValue(model) {
 
 // Persist model selection across sessions
 els.modelSelect.addEventListener('change', () => {
-  localStorage.setItem('dai-model', els.modelSelect.value);
+  localStorage.setItem('nova-model', els.modelSelect.value);
 });
 
 function setTopbarChatButtons(visible) {
