@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="Shared conversation — D-AI" />
-  <title>Shared Conversation — D-AI</title>
+  <meta name="description" content="Shared conversation — Nova AI" />
+  <title>Shared Conversation — Nova AI</title>
 
   <!-- Preconnect for fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,7 +14,7 @@
   <!-- Highlight.js dark theme -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
 
-  <!-- D-AI design tokens -->
+  <!-- Nova AI design tokens -->
   <link rel="stylesheet" href="/css/variables.css" />
 
   <!-- External libraries -->
@@ -435,9 +435,9 @@
 
   <!-- ── Top bar ────────────────────────────────────────────── -->
   <header class="share-topbar">
-    <a href="/" class="share-brand" aria-label="D-AI home">
-      <div class="share-brand-logo">D</div>
-      <span class="share-brand-name">D-AI</span>
+    <a href="/" class="share-brand" aria-label="Nova AI home">
+      <div class="share-brand-logo">N</div>
+      <span class="share-brand-name">Nova AI</span>
     </a>
     <div class="share-topbar-right">
       <span class="share-badge">Shared conversation</span>
@@ -462,7 +462,7 @@
         Shared
       </div>
       <h1 class="conv-title" id="shareTitle">Shared Conversation</h1>
-      <div class="conv-subtitle" id="shareSubtitle">Read-only view · D-AI</div>
+      <div class="conv-subtitle" id="shareSubtitle">Read-only view · Nova AI</div>
     </div>
 
     <!-- Messages -->
@@ -479,7 +479,7 @@
     <footer class="share-footer" id="shareFooter" style="display:none">
       <a href="/" class="share-footer-brand">
         <div class="share-brand-logo" style="width:24px;height:24px;font-size:11px;border-radius:7px;box-shadow:none">N</div>
-        <span>Powered by <strong>D-AI</strong></span>
+        <span>Powered by <strong>Nova AI</strong></span>
       </a>
       <a href="/" class="share-cta-btn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -571,7 +571,7 @@
 
       const label = document.createElement('div');
       label.className = 'msg-role-label';
-      label.textContent = role === 'user' ? 'You' : 'D-AI';
+      label.textContent = role === 'user' ? 'You' : 'Nova AI';
 
       const bubble = document.createElement('div');
       bubble.className = 'msg-bubble' + (role !== 'user' ? ' markdown-body' : '');
@@ -604,9 +604,9 @@
 
         // Show title
         document.getElementById('shareTitle').textContent = data.title || 'Shared Conversation';
-        document.title = `${data.title || 'Shared Conversation'} — D-AI`;
+        document.title = `${data.title || 'Shared Conversation'} — Nova AI`;
         document.getElementById('shareSubtitle').textContent =
-          `Read-only view · ${data.message_count ?? data.messages?.length ?? 0} messages · D-AI`;
+          `Read-only view · ${data.message_count ?? data.messages?.length ?? 0} messages · Nova AI`;
         document.getElementById('convHeader').style.display = 'block';
         document.getElementById('shareFooter').style.display = 'flex';
 

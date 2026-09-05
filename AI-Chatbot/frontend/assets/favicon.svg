@@ -9,14 +9,11 @@
   <!-- Background -->
   <rect width="32" height="32" rx="8" fill="white"/>
 
-  <!-- D letterform -->
-  <path d="M7 7 H16 C22 7 25 11 25 16 C25 21 22 25 16 25 H7 Z"
+  <!-- N letterform -->
+  <path d="M7 24 V8 H11 L21 19 V8 H25 V24 H21 L11 13 V24 Z"
         fill="url(#fg)"/>
-  <!-- Inner D cutout -->
-  <path d="M11 11 H15 C19 11 21 13 21 16 C21 19 19 21 15 21 H11 Z"
-        fill="white"/>
 
-  <!-- AI dot accent -->
-  <circle cx="27" cy="7" r="2.5" fill="#EF4444"/>
-  <circle cx="27" cy="7" r="1.2" fill="white"/>
+  <!-- AI spark accent -->
+  <circle cx="27" cy="6" r="2.5" fill="#EF4444"/>
+  <circle cx="27" cy="6" r="1.2" fill="white"/>
 </svg>

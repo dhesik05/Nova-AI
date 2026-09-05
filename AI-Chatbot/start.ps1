@@ -15,7 +15,7 @@ function Ensure-Dir($path) {
   }
 }
 
-Write-Host "== D-AI startup (PowerShell) =="
+Write-Host "== Nova AI startup (PowerShell) =="
 Write-Host "ProjectRoot: $ProjectRoot"
 
 # Create venv if missing

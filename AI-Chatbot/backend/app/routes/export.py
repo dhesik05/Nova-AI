@@ -40,7 +40,7 @@ def export_pdf(conversation_id: int, db: Session = Depends(get_db), current_user
         pdf = FPDF()
         pdf.add_page()
         pdf.set_font("helvetica", "B", 16)
-        pdf.cell(0, 10, f"D-AI Chat - {conv.title}", ln=True)
+        pdf.cell(0, 10, f"Nova AI Chat - {conv.title}", ln=True)
         pdf.set_font("helvetica", "", 10)
         pdf.cell(0, 10, f"Model: {conv.model}", ln=True)
         pdf.ln(5)
@@ -97,7 +97,7 @@ def export_txt(conversation_id: int, db: Session = Depends(get_db), current_user
 
 
 def _build_txt(conv, msgs) -> str:
-    output = f"D-AI Chat - {conv.title}\n"
+    output = f"Nova AI Chat - {conv.title}\n"
     output += f"Model: {conv.model}\n"
     output += "=" * 40 + "\n\n"
     for msg in msgs:

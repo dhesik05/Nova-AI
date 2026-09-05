@@ -1,5 +1,5 @@
 /* ============================================================
-   D-AI — Unified App Script  (v3 — Debugged & Stabilized)
+   Nova AI — Unified App Script  (v3 — Debugged & Stabilized)
    All modules merged to avoid ES module circular dependency issues.
    Organised into clearly labelled sections.
    ============================================================ */
@@ -509,7 +509,7 @@ function showWelcome() {
           <div class="skeleton-line w-1h"></div>
         </div>
       </div>
-      <div class="message-row ai" id="typingIndicator" aria-label="D-AI is typing" role="status">
+      <div class="message-row ai" id="typingIndicator" aria-label="Nova AI is typing" role="status">
         <div class="msg-avatar ai-avatar" aria-hidden="true">✦</div>
         <div class="typing-dots" aria-hidden="true">
           <div class="typing-dot"></div>
@@ -521,7 +521,7 @@ function showWelcome() {
 
   els.typingIndicator = document.getElementById('typingIndicator');
   els.skeletonWrap    = document.getElementById('skeletonWrap');
-  els.topbarTitle.textContent = 'D-AI';
+  els.topbarTitle.textContent = 'Nova AI';
   setTopbarChatButtons(false);
 }
 
@@ -575,7 +575,7 @@ function createMessageRow(role, text, timestamp) {
   if (role !== 'system') {
     const label         = document.createElement('div');
     label.className     = 'msg-role-label';
-    label.textContent   = role === 'user' ? 'You' : 'D-AI';
+    label.textContent   = role === 'user' ? 'You' : 'Nova AI';
     content.appendChild(label);
   }
 
@@ -684,7 +684,7 @@ function startStreamMessage() {
 
   const label   = document.createElement('div');
   label.className  = 'msg-role-label';
-  label.textContent = 'D-AI';
+  label.textContent = 'Nova AI';
 
   streamBubble  = document.createElement('div');
   // Use a <pre>-like container during streaming for performance;

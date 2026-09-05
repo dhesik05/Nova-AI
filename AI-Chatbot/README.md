@@ -1,6 +1,6 @@
-# D-AI
+# Nova AI
 
-Windows (PowerShell) setup + run instructions.
+Your Intelligent AI Assistant powered by Groq. Conversational intelligence with streaming chat, document Q&A, and fast responses.
 
 ## Prerequisites
 - Python 3.10+

@@ -10,7 +10,7 @@ set "UPLOAD_DIR=%BACKEND_DIR%\uploads"
 set "VECTOR_DIR=%BACKEND_DIR%\vector_store"
 set "REQ_FILE=%BACKEND_DIR%\requirements.txt"
 
-echo == D-AI startup (BAT) ==
+echo == Nova AI startup (BAT) ==
 echo ProjectRoot: %PROJECT_ROOT%
 
 if not exist "%VENV_DIR%\Scripts\python.exe" (

@@ -36,7 +36,7 @@ APP_VERSION = "0.1.0"
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="D-AI")
+    app = FastAPI(title="Nova AI")
 
     if not IS_VERCEL:
         # Ensure storage directories exist for local development
@@ -110,7 +110,7 @@ def create_app() -> FastAPI:
             {
                 "status": "ok" if (db_ok and groq_ok) else "degraded",
                 "app": {
-                    "name": "D-AI",
+                    "name": "Nova AI",
                     "version": APP_VERSION,
                     "python": platform.python_version(),
                 },
